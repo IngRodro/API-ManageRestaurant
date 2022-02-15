@@ -57,6 +57,7 @@ export async function registerUser(req:Request, res: Response): Promise<Response
                 usersave.state,
             ];
             conn.query(sql, values)
+            return res.json({status: "User saved"});
     }else{
         return res.json({status: "This user has already been used"})
     }
@@ -78,6 +79,19 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
     user.state,
     user.username,
     ];
-    const result = conn.query(sql, value);
-    return res.json(result);
+    conn.query(sql, value);
+    return res.json({status: "User updated"});
+}
+
+export async function deleteUser(req: Request, res: Response) {
+        const conn = await connect();
+        let username = req.params.username_req;
+    
+        //Consulta para eliminar el usuario.
+        let sql: string = 'delete from restaurant.users where users.username = ?';
+        const value: string = username;
+    
+        //Bloque que activa la consulta (1)
+        conn.query(sql, value)
+        res.json({state: 'deleted'});
 }
