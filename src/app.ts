@@ -7,9 +7,8 @@ import UserRoutes from './routes/user.routes'
 export class App {
     app: Application;
 
-    constructor(
-        private port?: number | string
-    ) {
+    constructor(private port?: number | string) 
+    {
         this.app = express();
         this.settings();
         this.middlewares();

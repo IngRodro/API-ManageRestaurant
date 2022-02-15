@@ -1,9 +1,11 @@
 import { Router } from 'express'
-import { getPosts } from '../controller/user.controller'
+import { loginUser, registerUser, updateUser } from '../controller/user.controller'
 
 const router = Router();
-//Ruta Login.
+
 router.route('/')
-    .get(getPosts);
+    .get(loginUser)
+    .post(registerUser)
+    .put(updateUser);
 
 export default router;
