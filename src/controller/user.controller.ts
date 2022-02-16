@@ -86,11 +86,20 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
 export async function updateUsername(req: Request, res :Response): Promise<Response | void> {
     const conn = await connect();
     let currentUsername: string = req.params.username_req;
-    let user: User = req.body;
-    let sql: string ="UPDATE users set username=? where username=?";
-    const value = [user.username, currentUsername];
-    conn.query(sql, value);
-    return res.json({status: "User updated"});
+    let usernameupdate: User = req.body;
+    const query = `SELECT * from users where users.username = ?;`;
+    const values: string = usernameupdate.username;
+    const call = await conn.query(query, values) 
+    const user:string = JSON.stringify(call[0]);
+    let userjson: User[] = JSON.parse(user)
+            if (userjson.length === 0) {
+                let sql: string ="UPDATE users set username=? where username=?";
+                const value = [usernameupdate.username, currentUsername];
+                conn.query(sql, value);
+                return res.json({status: "User updated"});
+            }else{
+                return res.json({status: "This user has already been used"})
+            }
 }
 
 export async function deleteUser(req: Request, res: Response) {
