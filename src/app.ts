@@ -2,7 +2,8 @@ import express, { Application } from 'express'
 import morgan from 'morgan'
 
 // Routes
-import UserRoutes from './routes/user.routes'
+import UserRoutes from './routes/user.routes';
+import SupplierRoutes from './routes/supplier.routes'
 
 export class App {
     app: Application;
@@ -25,8 +26,8 @@ export class App {
     }
 
     private routes() {
-        this.app.use('/users', UserRoutes);
-       // this.app.use('/posts', PostRoutes);
+        this.app.use('/user', UserRoutes);
+        this.app.use('/supplier', SupplierRoutes);
     }
 
     async listen(): Promise<void> {
