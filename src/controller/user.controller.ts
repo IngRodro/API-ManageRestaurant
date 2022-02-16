@@ -91,7 +91,7 @@ export async function deleteUser(req: Request, res: Response) {
         let sql: string = 'delete from restaurant.users where users.username = ?';
         const value: string = username;
     
-        //Bloque que activa la consulta (1)
+        //Bloque que activa la consulta
         conn.query(sql, value)
         res.json({state: 'deleted'});
 }
