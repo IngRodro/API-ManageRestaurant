@@ -83,6 +83,16 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
     return res.json({status: "User updated"});
 }
 
+export async function updateUsername(req: Request, res :Response): Promise<Response | void> {
+    const conn = await connect();
+    let currentUsername: string = req.params.username_req;
+    let user: User = req.body;
+    let sql: string ="UPDATE users set username=? where username=?";
+    const value = [user.username, currentUsername];
+    conn.query(sql, value);
+    return res.json({status: "User updated"});
+}
+
 export async function deleteUser(req: Request, res: Response) {
         const conn = await connect();
         let username = req.params.username_req;
