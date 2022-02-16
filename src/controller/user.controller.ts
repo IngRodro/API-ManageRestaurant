@@ -87,13 +87,13 @@ export async function updateUsername(req: Request, res :Response): Promise<Respo
     const conn = await connect();
     let currentUsername: string = req.params.username_req;
     let usernameupdate: User = req.body;
-    const query = `SELECT * from users where users.username = ?;`;
+    const query = 'SELECT * from users where users.username = ?';
     const values: string = usernameupdate.username;
     const call = await conn.query(query, values) 
     const user:string = JSON.stringify(call[0]);
     let userjson: User[] = JSON.parse(user)
             if (userjson.length === 0) {
-                let sql: string ="UPDATE users set username=? where username=?";
+                let sql: string ='UPDATE users set username=? where username=?';
                 const value = [usernameupdate.username, currentUsername];
                 conn.query(sql, value);
                 return res.json({status: "User updated"});
@@ -102,15 +102,15 @@ export async function updateUsername(req: Request, res :Response): Promise<Respo
             }
 }
 
-export async function deleteUser(req: Request, res: Response) {
-        const conn = await connect();
-        let username = req.params.username_req;
-    
-        //Consulta para eliminar el usuario.
-        let sql: string = 'delete from restaurant.users where users.username = ?';
-        const value: string = username;
-    
-        //Bloque que activa la consulta
-        conn.query(sql, value)
-        res.json({state: 'deleted'});
+export async function deleteUser(req: Request, res: Response): Promise<Response | void> {
+    const conn = await connect();
+    let username = req.params.username_req;
+
+    //Consulta para eliminar el usuario.
+    let sql: string = 'delete from restaurant.users where users.username = ?';
+    const value: string = username;
+
+    //Bloque que activa la consulta
+    conn.query(sql, value)
+    return res.json({state: 'deleted'});
 }
