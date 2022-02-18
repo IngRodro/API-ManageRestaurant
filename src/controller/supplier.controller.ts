@@ -13,8 +13,13 @@ export async function listSupliers(req: Request, res: Response): Promise<Respons
         let suppliersjson: Supllier[] = JSON.parse(suppliersstring);
         res.json(suppliersjson)
     }
-    catch (e) {
-        console.log(e)
+    catch (e: any) {
+        res.status(500).json({
+            message: "Internal server error",
+            code: 500,
+            errors: e?.response?.data || e?.message || null,
+            data: null,
+        });
     } 
 }
 
@@ -32,8 +37,13 @@ export async function registerSupplier(req:Request, res: Response): Promise<Resp
         ];
         await conn.query(query, values);
         res.json({status: 'saved'})
-    }catch(e){
-        console.log(e);
+    }catch(e: any){
+        res.status(500).json({
+            message: "Internal server error",
+            code: 500,
+            errors: e?.response?.data || e?.message || null,
+            data: null,
+        });
     }
 }
 
@@ -53,15 +63,30 @@ export async function updateSuplier(req: Request, res :Response): Promise<Respon
         ];
         await conn.query(query, values);
         return res.json({status: 'Supplier Updated'})
-    }catch(e){
-        console.log(e)
+    }catch(e: any){
+        res.status(500).json({
+            message: "Internal server error",
+            code: 500,
+            errors: e?.response?.data || e?.message || null,
+            data: null,
+        });
     }
 }
 
 export async function deleteSupplier(req: Request, res: Response): Promise<Response | void> {
-    const idSupplier: number = parseInt(req.params.idsupplier_req);
-    const conn = await connect();
-    const query: string = `Delete from suppliers where idSupplier = ${idSupplier}`
-    await conn.query(query);
-    return res.json({status: 'Supplier Deleted'});
+    try{
+        const idSupplier: number = parseInt(req.params.idsupplier_req);
+        const conn = await connect();
+        const query: string = `Delete from suppliers where idSupplier = ${idSupplier}`
+        await conn.query(query);
+        return res.json({status: 'Supplier Deleted'});
+    }
+    catch(e: any){
+        res.status(500).json({
+            message: "Internal server error",
+            code: 500,
+            errors: e?.response?.data || e?.message || null,
+            data: null,
+        });
+    }
 }

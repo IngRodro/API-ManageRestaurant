@@ -28,6 +28,13 @@ export class App {
     private routes() {
         this.app.use('/user', UserRoutes);
         this.app.use('/supplier', SupplierRoutes);
+        this.app.use((req, res) => {
+            res.status(404).json({
+                message: "Not Found",
+                code: 404,
+                data: null
+            });
+        });
     }
 
     async listen(): Promise<void> {
