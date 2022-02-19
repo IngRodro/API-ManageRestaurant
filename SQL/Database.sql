@@ -184,23 +184,4 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Categorias` (
   `state` VARCHAR(20) NULL,
   PRIMARY KEY (`idCategoria`));
 
--- ----------------------------------------------------------------------------
--- Table Restaurant.Recetas
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Restaurant`.`Recetas` (
-  `idReceta` INT NOT NULL AUTO_INCREMENT,
-  `idSaleProduct` INT NULL,
-  `idPurchaseProduct` INT NULL,
-  `cantidadProdIngrediente` INT NULL,
-  PRIMARY KEY (`idReceta`),
-  CONSTRAINT `FK__Recetas__idProdu__4222D4EF`
-    FOREIGN KEY (`idSaleProduct`)
-    REFERENCES `Restaurant`.`SaleProducts` (`idSaleProduct`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `FK__Recetas__idProdu__4316F928`
-    FOREIGN KEY (`idPurchaseProduct`)
-    REFERENCES `Restaurant`.`PurchaseProducts` (`idPurchaseProduct`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
 SET FOREIGN_KEY_CHECKS = 1;
