@@ -9,9 +9,7 @@ export async function listSupliers(req: Request, res: Response): Promise<Respons
         const conn = await connect();
         const query: string = 'SELECT * from suppliers';
         const call = await conn.query(query);
-        const suppliersstring = JSON.stringify(call[0]);
-        let suppliersjson: Supllier[] = JSON.parse(suppliersstring);
-        res.json(suppliersjson)
+        res.json(call[0]);
     }
     catch (e: any) {
         res.status(500).json({
@@ -36,7 +34,7 @@ export async function registerSupplier(req:Request, res: Response): Promise<Resp
             supplier.state
         ];
         await conn.query(query, values);
-        res.json({status: 'saved'})
+        res.json({status: 'saved'});
     }catch(e: any){
         res.status(500).json({
             message: "Internal server error",
@@ -62,7 +60,7 @@ export async function updateSuplier(req: Request, res :Response): Promise<Respon
             idSupplier
         ];
         await conn.query(query, values);
-        return res.json({status: 'Supplier Updated'})
+        return res.json({status: 'Supplier Updated'});
     }catch(e: any){
         res.status(500).json({
             message: "Internal server error",
@@ -77,7 +75,7 @@ export async function deleteSupplier(req: Request, res: Response): Promise<Respo
     try{
         const idSupplier: number = parseInt(req.params.idsupplier_req);
         const conn = await connect();
-        const query: string = `Delete from suppliers where idSupplier = ${idSupplier}`
+        const query: string = `Update suppliers set state = 1 where idSupplier = ${idSupplier}`
         await conn.query(query);
         return res.json({status: 'Supplier Deleted'});
     }

@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Users` (
   `email` VARCHAR(50) NULL,
   `password` VARCHAR(64) NULL,
   `rol` VARCHAR(20) NULL,
-  `state` VARCHAR(20) NULL,
+  `state` INT NULL,
   PRIMARY KEY (`username`));
 
 -- ----------------------------------------------------------------------------

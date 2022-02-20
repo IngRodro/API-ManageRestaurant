@@ -6,8 +6,7 @@
   "scripts": {
     "clean": "rimraf build",
     "build": "tsc",
-    "dev": "ts-node-dev --respawn src/index.ts",
-    "start": "nodemon src/index.ts --exec ts-node-dev"
+    "dev": "nodemon src/index.ts --exec ts-node-dev"
   },
   "keywords": [],
   "author": "",

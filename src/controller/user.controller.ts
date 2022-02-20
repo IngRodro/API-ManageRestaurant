@@ -16,20 +16,19 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
         const call = await conn.query(query, values);
         let user: User[] = JSON.parse(JSON.stringify(call[0]));
         if(user.length == 0){
-                let result = await compare(userlogin.password, user[0].password)
-                    if(result){
-                            const resJson = {
-                                user: user[0].username,
-                                rol : user[0].rol
-                            }
-                            res.status(200).json(resJson);
-                    }else{
-                        res.status(200).json({status: 'Error de sesion'});
-                    }
-                
+            let result = await compare(userlogin.password, user[0].password)
+            if(result){
+                const resJson = {
+                    user: user[0].username,
+                    rol : user[0].rol
+                }
+                res.status(200).json(resJson);
             }else{
                 res.status(200).json({status: 'Error de sesion'});
-            } 
+            }
+        }else{
+            res.status(200).json({status: 'Error de sesion'});
+        } 
     }
     catch (e: any) {
         res.status(500).json({
@@ -43,10 +42,10 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
 
 async function validateUser(username: string): Promise<Boolean > {
     const conn = await connect();
-        const query = `SELECT * from users where username = '${username}'`;
-        const call = await conn.query(query) 
-        let user: User[] = JSON.parse(JSON.stringify(call[0]));
-        return user.length == 0;
+    const query = `SELECT * from users where username = '${username}'`;
+    const call = await conn.query(query) 
+    let user: User[] = JSON.parse(JSON.stringify(call[0]));
+    return user.length == 0;
 }
 
 export async function registerUser(req:Request, res: Response): Promise<Response | void> {
@@ -88,15 +87,15 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
         let sql: string =
         "call restaurant.sp_update_users(?, ?, ?, ?, ?, ?, ?, ?, ?)";
         const value = [
-        user.name,
-        user.lastname,
-        user.age,
-        user.number,
-        user.email,
-        hashSync(user.password, 12),
-        user.rol,
-        user.state,
-        user.username,
+            user.name,
+            user.lastname,
+            user.age,
+            user.number,
+            user.email,
+            hashSync(user.password, 12),
+            user.rol,
+            user.state,
+            user.username,
         ];
         conn.query(sql, value);
         return res.status(200).json({status: "User updated"});
@@ -112,16 +111,16 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
 
 export async function updateUsername(req: Request, res :Response): Promise<Response | void> {
     try{const conn = await connect();
-    let currentUsername: string = req.params.username_req;
-    let usernameupdate: User = req.body;
-    if (await validateUser(usernameupdate.username)) {
-        let sql: string ='UPDATE users set username=? where username=?';
-        const value = [usernameupdate.username, currentUsername];
-        conn.query(sql, value);
-        return res.status(200).json({status: "User updated"});
-    }else{
-        return res.status(200).json({status: "This user has already been used"})
-    }
+        let currentUsername: string = req.params.username_req;
+        let usernameupdate: User = req.body;
+        if (await validateUser(usernameupdate.username)) {
+            let sql: string ='UPDATE users set username=? where username=?';
+            const value = [usernameupdate.username, currentUsername];
+            conn.query(sql, value);
+            return res.status(200).json({status: "User updated"});
+        }else{
+            return res.status(200).json({status: "This user has already been used"})
+        }
     }catch (e: any) {
         res.status(500).json({
             message: "Internal server error",
@@ -134,13 +133,13 @@ export async function updateUsername(req: Request, res :Response): Promise<Respo
 
 export async function deleteUser(req: Request, res: Response): Promise<Response | void> {
     try{
-    const conn = await connect();
-    let username = req.params.username_req;
-    //Consulta para eliminar el usuario.
-    let sql: string = 'delete from restaurant.users where users.username = ?';
-    const value: string = username;
-    conn.query(sql, value)
-    return res.status(200).json({state: 'deleted'});
+        const conn = await connect();
+        let username = req.params.username_req;
+        //Consulta para eliminar el usuario.
+        let sql: string = 'UPDATE users set state=0 where users.username = ?';
+        const value: string = username;
+        conn.query(sql, value)
+        return res.status(200).json({state: 'Deleted'});
     }catch (e: any) {
         res.status(500).json({
             message: "Internal server error",
