@@ -1,8 +1,8 @@
 import { Request, Response } from 'express'
 // DB
 import { connect } from '../database'
-import { Categorias } from '../interfaces/Categorias';
 // Interfaces
+import { Categorias } from '../interfaces/Categorias';
 import { SaleProducts } from '../interfaces/SaleProducts'
 
 export async function listSaleProducts(req: Request, res: Response): Promise<Response | void> {
@@ -17,7 +17,7 @@ export async function listSaleProducts(req: Request, res: Response): Promise<Res
                 nameProduct: saleProduct.nameProduct,
                 price: saleProduct.price,
                 idCategoria: {
-                    idCategoria: saleProduct.idCategoria,
+                    idCategoria: saleProduct.idCategory,
                     nameCategory: saleProduct.nameCategory,
                     stateCategory: saleProduct.stateCategory
                 },
