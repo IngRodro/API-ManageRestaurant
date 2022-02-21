@@ -7,7 +7,7 @@ import { Supllier } from '../interfaces/Supplier'
 export async function listSupliers(req: Request, res: Response): Promise<Response | void> {
     try {
         const conn = await connect();
-        const query: string = 'SELECT * from suppliers';
+        const query: string = 'SELECT * from suppliers where state != 0';
         const call = await conn.query(query);
         res.json(call[0]);
     }
@@ -75,7 +75,7 @@ export async function deleteSupplier(req: Request, res: Response): Promise<Respo
     try{
         const idSupplier: number = parseInt(req.params.idsupplier_req);
         const conn = await connect();
-        const query: string = `Update suppliers set state = 1 where idSupplier = ${idSupplier}`
+        const query: string = `Update suppliers set state = 0 where idSupplier = ${idSupplier}`
         await conn.query(query);
         return res.json({status: 'Supplier Deleted'});
     }

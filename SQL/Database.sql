@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Suppliers` (
   `location` VARCHAR(60) NULL,
   `number` VARCHAR(15) NULL,
   `email` VARCHAR(30) NULL,
-  `state` VARCHAR(20) NULL,
+  `state` INT NULL,
   PRIMARY KEY (`idSupplier`));
 
 -- ----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`SaleProducts` (
   `name` VARCHAR(25) NULL,
   `price` DECIMAL(19,4) NULL,
   `idCategoria` INT NOT NULL,
-  `state` VARCHAR(20) NULL,
+  `state` INT NULL,
   PRIMARY KEY (`idSaleProduct`),
   CONSTRAINT `FK__Productos__idCat__3E52440B`
     FOREIGN KEY (`idCategoria`)
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`PurchaseProducts` (
   `price` DECIMAL(19,4) NULL,
   `idSupplier` INT NULL,
   `idCategoria` INT NOT NULL,
-  `state` VARCHAR(20) NULL,
+  `state` INT NULL,
   PRIMARY KEY (`idPurchaseProduct`),
   CONSTRAINT `FK__Productos__idPro__2A4B4B5E`
     FOREIGN KEY (`idSupplier`)
@@ -180,8 +180,8 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Almacen` (
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Restaurant`.`Categorias` (
   `idCategoria` INT NOT NULL AUTO_INCREMENT,
-  `nameCategoria` VARCHAR(50) NULL,
-  `state` VARCHAR(20) NULL,
+  `name` VARCHAR(50) NULL,
+  `state` INT NULL,
   PRIMARY KEY (`idCategoria`));
 
 SET FOREIGN_KEY_CHECKS = 1;

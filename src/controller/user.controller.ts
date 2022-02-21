@@ -136,7 +136,7 @@ export async function deleteUser(req: Request, res: Response): Promise<Response 
         const conn = await connect();
         let username = req.params.username_req;
         //Consulta para eliminar el usuario.
-        let sql: string = 'UPDATE users set state=0 where users.username = ?';
+        let sql: string = 'UPDATE users set state = 0 where users.username = ?';
         const value: string = username;
         conn.query(sql, value)
         return res.status(200).json({state: 'Deleted'});

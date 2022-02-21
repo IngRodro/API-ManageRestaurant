@@ -4,5 +4,5 @@ export interface Supllier {
     location: string;
     number: string;
     email: string;
-    state: string;
+    state: number;
 }
