@@ -116,7 +116,7 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
 
 export async function updateUsername(req: Request, res :Response): Promise<Response | void> {
     try{const conn = await connect();
-        let currentUsername: string = req.params.username_req;
+        let currentUsername: string = req.username;
         let usernameupdate: User = req.body;
         if (await validateUser(usernameupdate.username)) {
             let sql: string ='UPDATE users set username=? where username=?';

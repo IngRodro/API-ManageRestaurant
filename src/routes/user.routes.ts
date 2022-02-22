@@ -5,12 +5,12 @@ const router = Router();
 
 router.get('/signin', loginUser)
 
+router.put('/uUsername', TokenValidation, updateUsername);
 router.route('/')
     .post(registerUser)
     .put(TokenValidation, updateUser);
 
 router.route('/:username_req')
     .delete(TokenValidation, deleteUser)
-    .put(TokenValidation, updateUsername);
 
 export default router;

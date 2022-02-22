@@ -11,7 +11,6 @@ export const TokenValidation = (req: Request, res: Response, next: NextFunction)
         if (!token) return res.status(401).json('Access Denied');
         const payload = jwt.verify(token, process.env['TOKEN_SECRET'] || '') as IPayload;
         req.username = payload.username;
-        console.log(payload);
         next();
     } catch (e) {
         res.status(400).send('Invalid Token');
