@@ -5,10 +5,31 @@ import { connect } from '../database'
 // Interfaces
 import { User } from '../interfaces/User'
 //Bcrypt
-import { compare, hashSync } from 'bcrypt';
+import { compare, genSalt, hash } from 'bcrypt';
 //Jsonwebtoken
-import jwt from 'jsonwebtoken'; 
+import jwt from 'jsonwebtoken';
 
+//Funcion encryptar Contraseña
+async function cryptPassword(password: string): Promise<string | void > {
+    let salt = await genSalt(12)
+    let passwordhash = await hash(password, salt);
+    return passwordhash;
+}
+
+//Funcion comparar Hash de la contraseña de la BD
+async function comparePassword(password: string ,hash: string): Promise<Boolean | void> {
+    return await compare(password, hash);
+}
+
+//Funcion Generar Token
+function genToken(usernamelogin: string): string{
+    const token: string = jwt.sign({username: usernamelogin}, process.env['TOKEN_SECRET'] || '', {
+        expiresIn: (60 * 60 * 24)
+    });
+    return token;
+}
+
+//Funcion de logueo
 export async function loginUser(req: Request, res: Response): Promise<Response | void> {
     try {
         const conn = await connect();
@@ -17,17 +38,13 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
         const call = await conn.query(query);
         let user: User[] = await JSON.parse(JSON.stringify(call[0]));
         if(user.length == 1){
-            let result = await compare(userlogin.password, user[0].password)
+            let result = await comparePassword(userlogin.password, user[0].password)
             if(result){
                 const resJson = {
                     user: user[0].username,
                     rol : user[0].rol
                 }
-                const token: string = jwt.sign({username: resJson.user}, process.env['TOKEN_SECRET'] || '', {
-                    expiresIn: (60 * 60 * 24)
-                });
-                res.header('auth-token', token).status(200).json(resJson);
-                console.log(token);
+                res.header('auth-token', genToken(resJson.user)).status(200).json(resJson);
             }else{
                 res.status(200).json({status: 'Error de sesion'});
             }
@@ -45,6 +62,7 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
     } 
 }
 
+//Funcion validar existencia de usuario
 async function validateUser(username: string): Promise<Boolean > {
     const conn = await connect();
     const query = `SELECT * from users where username = '${username}'`;
@@ -53,12 +71,14 @@ async function validateUser(username: string): Promise<Boolean > {
     return user.length == 0;
 }
 
+//Funcion registrar usuario
 export async function registerUser(req:Request, res: Response): Promise<Response | void> {
     try{
         const conn = await connect();
         let usersave: User = req.body;
         if (await validateUser(usersave.username)) {
             let sql: string = 'INSERT INTO users(username, name, lastname, age, number, email, password, rol, state) VALUES(?,?,?,?,?,?,?,?,?)';
+            let password : string | any = await cryptPassword(usersave.password);
             let values: any[] = [
                 usersave.username,
                 usersave.name,
@@ -66,7 +86,7 @@ export async function registerUser(req:Request, res: Response): Promise<Response
                 usersave.age,
                 usersave.number,
                 usersave.email,
-                hashSync(usersave.password, 12),
+                password,
                 usersave.rol,
                 usersave.state,
             ];
@@ -85,6 +105,7 @@ export async function registerUser(req:Request, res: Response): Promise<Response
     }
 }
 
+//Funcion actualizar usuario
 export async function updateUser(req: Request, res :Response): Promise<Response | void> {
     try{
         const conn = await connect();
@@ -97,7 +118,7 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
             user.age,
             user.number,
             user.email,
-            hashSync(user.password, 12),
+            await cryptPassword(user.password),
             user.rol,
             user.state,
             user.username,
@@ -114,6 +135,7 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
     }
 }
 
+//Funcion actualizar username
 export async function updateUsername(req: Request, res :Response): Promise<Response | void> {
     try{const conn = await connect();
         let currentUsername: string = req.username;
@@ -136,11 +158,11 @@ export async function updateUsername(req: Request, res :Response): Promise<Respo
     }
 }
 
+//Funcion eleminar actualizar
 export async function deleteUser(req: Request, res: Response): Promise<Response | void> {
     try{
         const conn = await connect();
         let username = req.params.username_req;
-        //Consulta para eliminar el usuario.
         let sql: string = 'UPDATE users set state = 0 where users.username = ?';
         const value: string = username;
         conn.query(sql, value)
