@@ -5,6 +5,7 @@ import morgan from 'morgan'
 import UserRoutes from './routes/user.routes';
 import SupplierRoutes from './routes/supplier.routes';
 import SalesProductsRoutes from './routes/saleproducts.routes';
+import { TokenValidation } from './libs/validationToken';
 
 export class App {
     app: Application;
@@ -28,8 +29,8 @@ export class App {
 
     private routes() {
         this.app.use('/user', UserRoutes);
-        this.app.use('/supplier', SupplierRoutes);
-        this.app.use('/saleproducts', SalesProductsRoutes);
+        this.app.use('/supplier', TokenValidation, SupplierRoutes);
+        this.app.use('/saleproducts',TokenValidation, SalesProductsRoutes);
         this.app.use((req, res) => {
             res.status(404).json({
                 message: "Not Found",

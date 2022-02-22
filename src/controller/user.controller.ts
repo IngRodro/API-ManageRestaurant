@@ -5,24 +5,29 @@ import { connect } from '../database'
 // Interfaces
 import { User } from '../interfaces/User'
 //Bcrypt
-import { compare, hashSync } from 'bcrypt'; 
+import { compare, hashSync } from 'bcrypt';
+//Jsonwebtoken
+import jwt from 'jsonwebtoken'; 
 
 export async function loginUser(req: Request, res: Response): Promise<Response | void> {
     try {
         const conn = await connect();
         let userlogin:User = req.body;
-        const query: string = 'SELECT * from users where users.username = ?';
-        const values: string = userlogin.username;
-        const call = await conn.query(query, values);
-        let user: User[] = JSON.parse(JSON.stringify(call[0]));
-        if(user.length == 0){
+        const query: string = `SELECT * from users where users.username = '${userlogin.username}'`;
+        const call = await conn.query(query);
+        let user: User[] = await JSON.parse(JSON.stringify(call[0]));
+        if(user.length == 1){
             let result = await compare(userlogin.password, user[0].password)
             if(result){
                 const resJson = {
                     user: user[0].username,
                     rol : user[0].rol
                 }
-                res.status(200).json(resJson);
+                const token: string = jwt.sign({username: resJson.user}, process.env['TOKEN_SECRET'] || '', {
+                    expiresIn: (60 * 60 * 24)
+                });
+                res.header('auth-token', token).status(200).json(resJson);
+                console.log(token);
             }else{
                 res.status(200).json({status: 'Error de sesion'});
             }

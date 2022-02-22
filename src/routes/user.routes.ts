@@ -1,15 +1,16 @@
 import { Router } from 'express'
 import { deleteUser, loginUser, registerUser, updateUser, updateUsername } from '../controller/user.controller'
-
+import { TokenValidation } from '../libs/validationToken';
 const router = Router();
 
+router.get('/signin', loginUser)
+
 router.route('/')
-    .get(loginUser)
     .post(registerUser)
-    .put(updateUser);
+    .put(TokenValidation, updateUser);
 
 router.route('/:username_req')
-    .delete(deleteUser)
-    .put(updateUsername);
+    .delete(TokenValidation, deleteUser)
+    .put(TokenValidation, updateUsername);
 
 export default router;
