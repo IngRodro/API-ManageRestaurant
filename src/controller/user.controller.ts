@@ -11,7 +11,7 @@ import { compare, genSalt, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 //Funcion encryptar Contraseña
-async function cryptPassword(password: string): Promise<string | void > {
+async function cryptPassword(password: string): Promise<string | void> {
     const salt = await genSalt(12)
     return await hash(password, salt);
 }
@@ -29,23 +29,43 @@ function genToken(usernamelogin: string): string{
     return token;
 }
 
+//Funcion validar existencia de usuario
+async function validationUser(username: string): Promise<User> {
+    const conn = await connect();
+    const query = `SELECT * from users where username = '${username}'`;
+    const call = await conn.query(query) 
+    const user: User[] = JSON.parse(JSON.stringify(call[0]));
+    return user[0];
+}
+
+//Funcion validar existencia email
+async function validationEmail(email: string): Promise<User> {
+    const conn = await connect();
+    const query = `SELECT * from users where email = '${email}'`;
+    const call = await conn.query(query);
+    const user: User[] = await JSON.parse(JSON.stringify(call[0]));
+    return user[0]
+    
+}
+
 //Funcion de logueo
 export async function loginUser(req: Request, res: Response): Promise<Response | void> {
     try {
-        const conn = await connect();
-        let userlogin:Logueo = req.body;
-        if(validateUser(userlogin.isesion) != null || validateEmail(userlogin.isesion) != null){
-            let userValidate: User;
-            if(validateUser(userlogin.isesion) == null){
-                userValidate = await validateUser(userlogin.isesion);
+        const userlogin:Logueo = req.body;
+        const validateUser = await validationUser(userlogin.isesion);
+        const validateEmail = await validationEmail(userlogin.isesion);
+        if(validateUser != null || validateEmail != null){
+            let userlogged: User;
+            if(validateUser == null){
+                userlogged = validateUser;
             }else{
-                userValidate = await validateEmail(userlogin.isesion)
+                userlogged = validateEmail;
             }
-            let result = await comparePassword(userlogin.password, userValidate.password)
+            const result = await comparePassword(userlogin.password, userlogged.password)
             if(result){
                 const resJson = {
-                    user: userValidate.username,
-                    rol : userValidate.rol,
+                    user: userlogged.username,
+                    rol : userlogged.rol,
                     code: 200
                 }
                 res.header('auth-token', genToken(resJson.user)).status(200).json(resJson);
@@ -66,36 +86,17 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
     } 
 }
 
-//Funcion validar existencia de usuario
-async function validateUser(username: string): Promise<User | any> {
-    const conn = await connect();
-    const query = `SELECT * from users where username = '${username}'`;
-    const call = await conn.query(query) 
-    let user: User[] = JSON.parse(JSON.stringify(call[0]));
-    if(user.length == 1){
-        return user[0];
-    }
-    return null
-}
-
-async function validateEmail(email: string): Promise<User> {
-    const conn = await connect();
-    const query = `SELECT * from users where email = '${email}'`;
-    const call = await conn.query(query);
-    let user: User[] = await JSON.parse(JSON.stringify(call[0]));
-    return user[0]
-    
-}
-
 //Funcion registrar usuario
 export async function registerUser(req:Request, res: Response): Promise<Response | void> {
     try{
         const conn = await connect();
-        let usersave: User = req.body;
-        if (await validateUser(usersave.username) == null && await validateEmail(usersave.email) == null) {
-            let sql: string = 'INSERT INTO users(username, name, lastname, age, number, email, password, rol, state) VALUES(?,?,?,?,?,?,?,?,?)';
-            let password : string | any = await cryptPassword(usersave.password);
-            let values: any[] = [
+        const usersave: User = req.body;
+        const validateUser = await validationUser(usersave.username);
+        const validateEmail = await validationEmail(usersave.email);
+        if (validateUser == null && validateEmail == null) {
+            const sql: string = 'INSERT INTO users(username, name, lastname, age, number, email, password, rol, state) VALUES(?,?,?,?,?,?,?,?,?)';
+            const password : string | any = await cryptPassword(usersave.password);
+            const values: any[] = [
                 usersave.username,
                 usersave.name,
                 usersave.lastname,
@@ -109,10 +110,10 @@ export async function registerUser(req:Request, res: Response): Promise<Response
             conn.query(sql, values)
             return res.status(201).json({status: "User saved"});
         }else{
-            if(await validateEmail(usersave.email) != null && await validateUser(usersave.username) != null){
+            if(validateUser != null && validateEmail != null){
                 return res.status(200).json({status: "This user and email has already been used"})
             }
-            if(await validateEmail(usersave.email) != null){
+            if(validateEmail != null){
                 return res.status(200).json({status: "This email has already been used"})
             }
             return res.status(200).json({status: "This user has already been used"})
@@ -131,9 +132,11 @@ export async function registerUser(req:Request, res: Response): Promise<Response
 export async function updateUser(req: Request, res :Response): Promise<Response | void> {
     try{
         const conn = await connect();
-        let user: User = req.body;
-        if (await validateEmail(user.email) == null ||  (await validateEmail(user.email)).username == req.username) {
-            let sql: string = "call restaurant.sp_update_users(?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const user: User = req.body;
+        const currentUser = req.username;
+        const validateEmail = await validationEmail(user.email);
+        if (validateEmail == null ||  validateEmail.username == req.username) {
+            const sql: string = "call restaurant.sp_update_users(?, ?, ?, ?, ?, ?, ?, ?, ?)";
             const value = [
                 user.name,
                 user.lastname,
@@ -143,7 +146,7 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
                 await cryptPassword(user.password),
                 user.rol,
                 user.state,
-                req.username
+                currentUser
             ];
             conn.query(sql, value);
             return res.status(200).json({status: "User updated"});
@@ -164,7 +167,7 @@ export async function updateUsername(req: Request, res :Response): Promise<Respo
     try{const conn = await connect();
         let currentUsername: string = req.username;
         let usernameupdate: User = req.body;
-        if (await validateUser(usernameupdate.username)) {
+        if (await validationUser(usernameupdate.username)) {
             let sql: string ='UPDATE users set username=? where username=?';
             const value = [usernameupdate.username, currentUsername];
             conn.query(sql, value);
