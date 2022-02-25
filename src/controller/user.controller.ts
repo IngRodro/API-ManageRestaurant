@@ -32,7 +32,7 @@ function genToken(usernamelogin: string): string{
 //Funcion validar existencia de usuario
 async function validationUser(username: string): Promise<User> {
     const conn = await connect();
-    const query = `SELECT * from users where username = '${username}'`;
+    const query = `SELECT * from users where username = '${username}' and state != 0`;
     const call = await conn.query(query) 
     const user: User[] = JSON.parse(JSON.stringify(call[0]));
     return user[0];
@@ -41,7 +41,7 @@ async function validationUser(username: string): Promise<User> {
 //Funcion validar existencia email
 async function validationEmail(email: string): Promise<User> {
     const conn = await connect();
-    const query = `SELECT * from users where email = '${email}'`;
+    const query = `SELECT * from users where email = '${email}' and state != 0`;
     const call = await conn.query(query);
     const user: User[] = await JSON.parse(JSON.stringify(call[0]));
     return user[0]
@@ -56,7 +56,7 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
         const validateEmail = await validationEmail(userlogin.isesion);
         if(validateUser != null || validateEmail != null){
             let userlogged: User;
-            if(validateUser == null){
+            if(validateUser != null){
                 userlogged = validateUser;
             }else{
                 userlogged = validateEmail;
@@ -70,10 +70,16 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
                 }
                 res.header('auth-token', genToken(resJson.user)).status(200).json(resJson);
             }else{
-                res.status(200).json({status: 'Error de sesion'});
+                res.status(200).json({
+                    status: 'Error de sesion',
+                    code: 200
+                });
             }
         }else{
-            res.status(200).json({status: 'Error de sesion'});
+            res.status(200).json({
+                status: 'Error de sesion',
+                code: 200
+            });
         } 
     }
     catch (e: any) {
@@ -108,15 +114,27 @@ export async function registerUser(req:Request, res: Response): Promise<Response
                 usersave.state,
             ];
             conn.query(sql, values)
-            return res.status(201).json({status: "User saved"});
+            return res.status(201).json({
+                status: "User saved",
+                code: 200
+            });
         }else{
             if(validateUser != null && validateEmail != null){
-                return res.status(200).json({status: "This user and email has already been used"})
+                return res.status(200).json({
+                    status: "This user and email has already been used",
+                    code: 200
+                })
             }
             if(validateEmail != null){
-                return res.status(200).json({status: "This email has already been used"})
+                return res.status(200).json({
+                    status: "This email has already been used",
+                    code: 200
+                })
             }
-            return res.status(200).json({status: "This user has already been used"})
+            return res.status(200).json({
+                status: "This user has already been used",
+                code: 200
+            })
         }
     }catch (e: any) {
         res.status(500).json({
@@ -149,9 +167,15 @@ export async function updateUser(req: Request, res :Response): Promise<Response 
                 currentUser
             ];
             conn.query(sql, value);
-            return res.status(200).json({status: "User updated"});
+            return res.status(200).json({
+                status: "User updated",
+                code: 200
+            });
         }
-        return res.status(200).json({status: "This email has already been used"});
+        return res.status(200).json({
+            status: "This email has already been used",
+            code: 200
+    });
     }catch (e: any) {
         res.status(500).json({
             message: "Internal server error",
@@ -171,9 +195,15 @@ export async function updateUsername(req: Request, res :Response): Promise<Respo
             let sql: string ='UPDATE users set username=? where username=?';
             const value = [usernameupdate.username, currentUsername];
             conn.query(sql, value);
-            return res.status(200).json({status: "User updated"});
+            return res.status(200).json({
+                status: "User updated",
+                code: 200
+            });
         }else{
-            return res.status(200).json({status: "This user has already been used"})
+            return res.status(200).json({
+                status: "This user has already been used",
+                code: 200
+            })
         }
     }catch (e: any) {
         res.status(500).json({
