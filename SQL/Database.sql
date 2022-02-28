@@ -48,12 +48,12 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`SaleProducts` (
   `idSaleProduct` INT NOT NULL AUTO_INCREMENT ,
   `name` VARCHAR(25) NULL,
   `price` DECIMAL(19,4) NULL,
-  `idCategoria` INT NOT NULL,
+  `idCategory` INT NOT NULL,
   `state` INT NULL,
   PRIMARY KEY (`idSaleProduct`),
   CONSTRAINT `FK__Productos__idCat__3E52440B`
-    FOREIGN KEY (`idCategoria`)
-    REFERENCES `Restaurant`.`Categorias` (`idCategoria`)
+    FOREIGN KEY (`idCategory`)
+    REFERENCES `Restaurant`.`Categories` (`idCategory`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`PurchaseProducts` (
   `name` VARCHAR(25) NULL,
   `price` DECIMAL(19,4) NULL,
   `idSupplier` INT NULL,
-  `idCategoria` INT NOT NULL,
+  `idCategory` INT NOT NULL,
   `state` INT NULL,
   PRIMARY KEY (`idPurchaseProduct`),
   CONSTRAINT `FK__Productos__idPro__2A4B4B5E`
@@ -74,8 +74,8 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`PurchaseProducts` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `FK__Productos__idCat__3F466844`
-    FOREIGN KEY (`idCategoria`)
-    REFERENCES `Restaurant`.`Categorias` (`idCategoria`)
+    FOREIGN KEY (`idCategory`)
+    REFERENCES `Restaurant`.`Categories` (`idCategory`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`SaleDetails` (
     ON UPDATE NO ACTION);
 
 -- ----------------------------------------------------------------------------
--- Table Restaurant.Compraas
+-- Table Restaurant.Purchases
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Restaurant`.`Purchases` (
   `idPurchase` INT NOT NULL AUTO_INCREMENT ,
@@ -128,12 +128,12 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Purchases` (
   `idSupplier` INT NULL,
   `username` VARCHAR(30) NULL,
   PRIMARY KEY (`idPurchase`),
-  CONSTRAINT `FK__Compraas__idProv__33D4B598`
+  CONSTRAINT `FK__Purchases__idProv__33D4B598`
     FOREIGN KEY (`idSupplier`)
     REFERENCES `Restaurant`.`Suppliers` (`idSupplier`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `FK__Compraas__name__34C8D9D1`
+  CONSTRAINT `FK__Purchases__name__34C8D9D1`
     FOREIGN KEY (`username`)
     REFERENCES `Restaurant`.`Usuarios` (`username`)
     ON DELETE NO ACTION
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`PurchaseDetails` (
     ON UPDATE NO ACTION,
   CONSTRAINT `FK__DetallesC__idCom__38996AB5`
     FOREIGN KEY (`idPurchase`)
-    REFERENCES `Restaurant`.`Compraas` (`idPurchase`)
+    REFERENCES `Restaurant`.`Purchases` (`idPurchase`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
 
@@ -176,12 +176,12 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Almacen` (
     ON UPDATE NO ACTION);
 
 -- ----------------------------------------------------------------------------
--- Table Restaurant.Categorias
+-- Table Restaurant.Categories
 -- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Restaurant`.`Categorias` (
-  `idCategoria` INT NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `Restaurant`.`Categories` (
+  `idCategory` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
   `state` INT NULL,
-  PRIMARY KEY (`idCategoria`));
+  PRIMARY KEY (`idCategory`));
 
 SET FOREIGN_KEY_CHECKS = 1;
