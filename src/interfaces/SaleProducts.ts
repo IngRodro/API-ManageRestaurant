@@ -1,9 +1,9 @@
-import { Categorias } from "./Categorias";
+import { Categories } from "./Categories";
 
 export interface SaleProducts {
     idSaleProduct?: number;
     nameProduct: string;
     price: number;
-    idCategoria: Categorias;
+    idCategory: Categories;
     stateProduct: number;
 }

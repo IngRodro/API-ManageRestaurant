@@ -2,7 +2,7 @@ import { Request, Response } from 'express'
 // DB
 import { connect } from '../database'
 // Interfaces
-import { Categorias } from '../interfaces/Categorias';
+import { Categories } from '../interfaces/Categories';
 import { SaleProducts } from '../interfaces/SaleProducts'
 
 export async function listSaleProducts(req: Request, res: Response): Promise<Response | void> {
@@ -12,17 +12,18 @@ export async function listSaleProducts(req: Request, res: Response): Promise<Res
         const call = await conn.query(query);
         let saleProducts: any[] = JSON.parse(JSON.stringify(call[0]));
         const saleProductsCategory = saleProducts.map(saleProduct =>{
-            return {
+            const saleProductFormated: SaleProducts = {
                 idSaleProduct: saleProduct.idSaleProduct,
                 nameProduct: saleProduct.nameProduct,
                 price: saleProduct.price,
-                idCategoria: {
-                    idCategoria: saleProduct.idCategory,
+                idCategory: {
+                    idCategory: saleProduct.idCategory,
                     nameCategory: saleProduct.nameCategory,
                     stateCategory: saleProduct.stateCategory
                 },
                 stateProduct: saleProduct.stateProduct
             };
+            return saleProductFormated;
         })
         res.json(saleProductsCategory);
     }
