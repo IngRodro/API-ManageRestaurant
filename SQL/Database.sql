@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Suppliers` (
   `location` VARCHAR(60) NULL,
   `number` VARCHAR(15) NULL,
   `email` VARCHAR(30) NULL,
-  `state` INT NULL,
+  `stateSupplier` INT NULL,
   PRIMARY KEY (`idSupplier`));
 
 -- ----------------------------------------------------------------------------
@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`SaleProducts` (
   `name` VARCHAR(25) NULL,
   `price` DECIMAL(19,4) NULL,
   `idCategory` INT NOT NULL,
-  `state` INT NULL,
+  `stateSaleProduct` INT NULL,
   PRIMARY KEY (`idSaleProduct`),
   CONSTRAINT `FK__Productos__idCat__3E52440B`
     FOREIGN KEY (`idCategory`)
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`PurchaseProducts` (
   `price` DECIMAL(19,4) NULL,
   `idSupplier` INT NULL,
   `idCategory` INT NOT NULL,
-  `state` INT NULL,
+  `statePurchaseProducts` INT NULL,
   PRIMARY KEY (`idPurchaseProduct`),
   CONSTRAINT `FK__Productos__idPro__2A4B4B5E`
     FOREIGN KEY (`idSupplier`)
@@ -86,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`Sales` (
   `idSale` INT NOT NULL AUTO_INCREMENT ,
   `date` DATETIME(6) NULL,
   `amount` DECIMAL(19,4) NULL,
-  `state` VARCHAR(15) NULL,
+  `stateSales` VARCHAR(15) NULL,
   `username` VARCHAR(30) NULL,
   `NumMesa` INT NULL,
   PRIMARY KEY (`idSale`),
@@ -162,26 +162,12 @@ CREATE TABLE IF NOT EXISTS `Restaurant`.`PurchaseDetails` (
     ON UPDATE NO ACTION);
 
 -- ----------------------------------------------------------------------------
--- Table Restaurant.Almacen
--- ----------------------------------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Restaurant`.`Almacen` (
-  `idAlmacen` INT NOT NULL AUTO_INCREMENT ,
-  `idPurchaseProduct` INT NULL,
-  `cantidadDisponible` DOUBLE NULL,
-  PRIMARY KEY (`idAlmacen`),
-  CONSTRAINT `FK__Almacen__idProdu__3B75D760`
-    FOREIGN KEY (`idPurchaseProduct`)
-    REFERENCES `Restaurant`.`PurchaseProducts` (`idPurchaseProduct`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
-
--- ----------------------------------------------------------------------------
 -- Table Restaurant.Categories
 -- ----------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Restaurant`.`Categories` (
   `idCategory` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(50) NULL,
-  `state` INT NULL,
+  `stateCategoy` INT NULL,
   PRIMARY KEY (`idCategory`));
 
 SET FOREIGN_KEY_CHECKS = 1;

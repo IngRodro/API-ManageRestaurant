@@ -96,12 +96,19 @@ export async function loginUser(req: Request, res: Response): Promise<Response |
 export async function registerUser(req:Request, res: Response): Promise<Response | void> {
     try{
         const conn = await connect();
+        //Constante username recoge el JSON con los datos a registrar del usuario.
         const usersave: User = req.body;
+        //Constante validateUser que recoge el resultado de la validacion del usuario.
         const validateUser = await validationUser(usersave.username);
+        //Constante validateEmail que recoge el resultado de la validacion del email.
         const validateEmail = await validationEmail(usersave.email);
+        //Verificacion de los datos del usuario para verificar si estos estan registrados.
         if (validateUser == null && validateEmail == null) {
+            //Variable sql con la consulta SQL para registrar el usuario en la tabla users.
             const sql: string = 'INSERT INTO users(username, name, lastname, age, number, email, password, rol, state) VALUES(?,?,?,?,?,?,?,?,?)';
+            //Encriptacion de la contraseña con la funcion cryptPassword
             const password : string | any = await cryptPassword(usersave.password);
+            //Constante values con los datos que se registraran
             const values: any[] = [
                 usersave.username,
                 usersave.name,
@@ -113,7 +120,9 @@ export async function registerUser(req:Request, res: Response): Promise<Response
                 usersave.rol,
                 usersave.state,
             ];
+            //Ejecucion de consulta SQL con los datos de values
             conn.query(sql, values)
+            //Retorno de respuesta res
             return res.status(201).json({
                 status: "User saved",
                 code: 200
@@ -137,7 +146,7 @@ export async function registerUser(req:Request, res: Response): Promise<Response
             })
         }
     }catch (e: any) {
-        res.status(500).json({
+        return res.status(500).json({
             message: "Internal server error",
             code: 500,
             errors: e?.response?.data || e?.message || null,

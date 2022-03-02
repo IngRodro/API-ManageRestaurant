@@ -5,5 +5,5 @@ export interface SaleProducts {
     nameProduct: string;
     price: number;
     idCategory: Categories;
-    stateProduct: number;
+    stateSaleProduct: number;
 }

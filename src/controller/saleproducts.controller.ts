@@ -8,7 +8,7 @@ import { SaleProducts } from '../interfaces/SaleProducts'
 export async function listSaleProducts(req: Request, res: Response): Promise<Response | void> {
     try {
         const conn = await connect();
-        const query: string = 'SELECT * from SaleProducts JOIN Categorias ON SaleProducts.idCategoria = Categorias.idCategoria where stateCategory != 0 and stateProduct != 0';
+        const query: string = 'SELECT * from SaleProducts JOIN Categories ON SaleProducts.idCategory = Categories.idCategoria where stateCategory != 0 and stateSaleProduct != 0';
         const call = await conn.query(query);
         let saleProducts: any[] = JSON.parse(JSON.stringify(call[0]));
         const saleProductsCategory = saleProducts.map(saleProduct =>{
@@ -21,7 +21,7 @@ export async function listSaleProducts(req: Request, res: Response): Promise<Res
                     nameCategory: saleProduct.nameCategory,
                     stateCategory: saleProduct.stateCategory
                 },
-                stateProduct: saleProduct.stateProduct
+                stateSaleProduct: saleProduct.stateProduct
             };
             return saleProductFormated;
         })
