@@ -1,4 +1,4 @@
 export interface Logueo {
-    isesion: string;
-    password: string;
+  isesion: string;
+  password: string;
 }

@@ -1,5 +1,5 @@
 export interface Categories {
-    idCategory?: number;
-    nameCategory: string;
-    stateCategory: number;
+  idCategory?: number;
+  nameCategory: string;
+  stateCategory: number;
 }
