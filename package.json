@@ -11,7 +11,8 @@
     "lint": "tsc --pretty --noEmit && eslint .",
     "lint:fix": "eslint . --fix",
     "format:check": "prettier --check .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
