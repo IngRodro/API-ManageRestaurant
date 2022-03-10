@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 // DB
-import { connect } from '../database';
+import connect from '../database';
 // Interfaces
 import { Supllier } from '../interfaces/Supplier';
 
@@ -56,7 +56,7 @@ export async function updateSuplier(
   res: Response
 ): Promise<Response | void> {
   try {
-    const idSupplier: number = parseInt(req.params.idsupplier_req);
+    const idSupplier: number = parseInt(req.params.idsupplier_req, 10);
     const supplier: Supllier = req.body;
     const conn = await connect();
     const query: string =
@@ -72,7 +72,7 @@ export async function updateSuplier(
     await conn.query(query, values);
     return res.json({ status: 'Supplier Updated' });
   } catch (e: any) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Internal server error',
       code: 500,
       errors: e?.response?.data || e?.message || null,
@@ -86,13 +86,13 @@ export async function deleteSupplier(
   res: Response
 ): Promise<Response | void> {
   try {
-    const idSupplier: number = parseInt(req.params.idsupplier_req);
+    const idSupplier: number = parseInt(req.params.idsupplier_req, 10);
     const conn = await connect();
     const query: string = `Update suppliers set state = 0 where idSupplier = ${idSupplier}`;
     await conn.query(query);
     return res.json({ status: 'Supplier Deleted' });
   } catch (e: any) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Internal server error',
       code: 500,
       errors: e?.response?.data || e?.message || null,

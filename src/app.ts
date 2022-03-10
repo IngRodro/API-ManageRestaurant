@@ -7,7 +7,7 @@ import SupplierRoutes from './routes/supplier.routes';
 import SalesProductsRoutes from './routes/saleproducts.routes';
 import { TokenValidation } from './libs/validationToken';
 
-export class App {
+export default class App {
   app: Application;
 
   constructor(private port?: number) {

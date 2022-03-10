@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 
-import { App } from './app';
+import App from './app';
 
 dotenv.config();
 
@@ -12,4 +12,4 @@ async function main() {
   await app.listen();
 }
 
-main();
+main().then();

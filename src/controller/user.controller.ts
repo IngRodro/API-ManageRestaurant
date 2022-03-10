@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 // DB
 import { compare, genSalt, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { connect } from '../database';
+import connect from '../database';
 // Interfaces
 import { User } from '../interfaces/User';
 import { Logueo } from '../interfaces/Logueo';
@@ -19,21 +19,16 @@ async function cryptPassword(password: string): Promise<string | void> {
 // Funcion comparar Hash de la contraseña de la BD
 async function comparePassword(
   password: string,
-  hash: string
+  _hash: string
 ): Promise<Boolean | void> {
-  return compare(password, hash);
+  return compare(password, _hash);
 }
 
 // Funcion Generar Token
 function genToken(usernamelogin: string): string {
-  const token: string = jwt.sign(
-    { username: usernamelogin },
-    process.env.TOKEN_SECRET || '',
-    {
-      expiresIn: '12h',
-    }
-  );
-  return token;
+  return jwt.sign({ username: usernamelogin }, process.env.TOKEN_SECRET || '', {
+    expiresIn: '12h',
+  });
 }
 
 // Funcion validar existencia de usuario
@@ -139,30 +134,29 @@ export async function registerUser(
         usersave.state,
       ];
       // Ejecucion de consulta SQL con los datos de values
-      conn.query(sql, values);
+      await conn.query(sql, values);
       // Retorno de respuesta res
       return res.status(201).json({
         status: 'User saved',
         code: 200,
       });
-    } 
-      if (validateUser != null && validateEmail != null) {
-        return res.status(200).json({
-          status: 'This user and email has already been used',
-          code: 200,
-        });
-      }
-      if (validateEmail != null) {
-        return res.status(200).json({
-          status: 'This email has already been used',
-          code: 200,
-        });
-      }
+    }
+    if (validateUser != null && validateEmail != null) {
       return res.status(200).json({
-        status: 'This user has already been used',
+        status: 'This user and email has already been used',
         code: 200,
       });
-    
+    }
+    if (validateEmail != null) {
+      return res.status(200).json({
+        status: 'This email has already been used',
+        code: 200,
+      });
+    }
+    return res.status(200).json({
+      status: 'This user has already been used',
+      code: 200,
+    });
   } catch (e: any) {
     return res.status(500).json({
       message: 'Internal server error',
@@ -183,7 +177,7 @@ export async function updateUser(
     const user: User = req.body;
     const currentUser = req.username;
     const validateEmail = await validationEmail(user.email);
-    if (validateEmail == null || validateEmail.username == req.username) {
+    if (!validateEmail || validateEmail.username === req.username) {
       const sql: string =
         'call restaurant.sp_update_users(?, ?, ?, ?, ?, ?, ?, ?, ?)';
       const value = [
@@ -197,7 +191,7 @@ export async function updateUser(
         user.state,
         currentUser,
       ];
-      conn.query(sql, value);
+      await conn.query(sql, value);
       return res.status(200).json({
         status: 'User updated',
         code: 200,
@@ -208,7 +202,7 @@ export async function updateUser(
       code: 200,
     });
   } catch (e: any) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Internal server error',
       code: 500,
       errors: e?.response?.data || e?.message || null,
@@ -225,23 +219,22 @@ export async function updateUsername(
   try {
     const conn = await connect();
     const currentUsername: string = req.username;
-    const usernameupdate: User = req.body;
-    if (await validationUser(usernameupdate.username)) {
+    const userNameUpdate: User = req.body;
+    if (await validationUser(userNameUpdate.username)) {
       const sql: string = 'UPDATE users set username=? where username=?';
-      const value = [usernameupdate.username, currentUsername];
-      conn.query(sql, value);
+      const value = [userNameUpdate.username, currentUsername];
+      await conn.query(sql, value);
       return res.status(200).json({
         status: 'User updated',
         code: 200,
       });
-    } 
-      return res.status(200).json({
-        status: 'This user has already been used',
-        code: 200,
-      });
-    
+    }
+    return res.status(200).json({
+      status: 'This user has already been used',
+      code: 200,
+    });
   } catch (e: any) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Internal server error',
       code: 500,
       errors: e?.response?.data || e?.message || null,
@@ -259,11 +252,10 @@ export async function deleteUser(
     const conn = await connect();
     const username = req.params.username_req;
     const sql: string = 'UPDATE users set state = 0 where users.username = ?';
-    const value: string = username;
-    conn.query(sql, value);
+    await conn.query(sql, username);
     return res.status(200).json({ state: 'Deleted' });
   } catch (e: any) {
-    res.status(500).json({
+    return res.status(500).json({
       message: 'Internal server error',
       code: 500,
       errors: e?.response?.data || e?.message || null,

@@ -22,9 +22,9 @@ export const TokenValidation = (
       process.env.TOKEN_SECRET || ''
     ) as IPayload;
     req.username = payload.username;
-    next();
+    return next();
   } catch (e) {
-    res.status(400).send({
+    return res.status(400).send({
       message: 'Invalid Token',
       code: 400,
     });

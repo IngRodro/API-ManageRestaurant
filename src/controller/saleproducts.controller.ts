@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
 // DB
-import { connect } from '../database';
+import connect from '../database';
 // Interfaces
-import { Categories } from '../interfaces/Categories';
-import { SaleProducts } from '../interfaces/SaleProducts';
+import type { SaleProducts } from '../interfaces/SaleProducts';
 
+// eslint-disable-next-line import/prefer-default-export
 export async function listSaleProducts(
   req: Request,
   res: Response
