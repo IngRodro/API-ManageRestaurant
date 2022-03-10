@@ -1,0 +1,31 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo 'Check format and eslint rules your project before committing'
+
+# Check ESLint Standards
+yarn format:check ||
+(
+        echo '--- Prettier Check Failed. Make yarn format and git add . try to commit again. ---'
+        false;
+)
+
+yarn lint ||
+(
+        echo '--- ESLint Check Failed. Make the required changes listed above, add changes and try to commit again. ---'
+        false;
+)
+
+# If everything passes... Now we can commit
+#echo '... Alright.... Code looks good to me... Trying to build now.'
+#
+#yarn build ||
+#(
+#    echo 'Better call Bob... Because your build failed
+#            Next build failed: View the errors above to see why.
+#    '
+#    false;
+#)
+
+# If everything passes... Now we can commit
+echo 'You win this time... I am committing this now.'

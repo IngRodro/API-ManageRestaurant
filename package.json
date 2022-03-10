@@ -1,17 +1,30 @@
 {
   "name": "nodejs-typescript-rest-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "./src/index.ts",
   "scripts": {
     "clean": "rimraf build",
     "build": "tsc",
     "dev": "nodemon src/index.ts --exec ts-node-dev",
-    "start": "concurrently \"tsc -w\" \"nodemon dist/index.js\""
+    "start": "concurrently \"tsc -w\" \"nodemon dist/index.js\"",
+    "lint": "tsc --pretty --noEmit && eslint .",
+    "lint:fix": "eslint . --fix",
+    "format:check": "prettier --check .",
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "morgan": "^1.10.0",
+    "mysql2": "^1.6.5"
+  },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/dotenv": "^8.2.0",
@@ -20,19 +33,20 @@
     "@types/morgan": "^1.9.1",
     "@types/mysql2": "github:types/mysql2",
     "@types/node": "^14.18.12",
+    "@typescript-eslint/eslint-plugin": "5.0.0",
+    "@typescript-eslint/parser": "5.0.0",
     "concurrently": "^7.0.0",
+    "eslint": "8.2.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-config-airbnb-typescript": "^16.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "2.25.2",
+    "husky": "^7.0.4",
     "nodemon": "^2.0.15",
+    "prettier": "^2.5.1",
     "ts-node": "^10.5.0",
     "ts-node-dev": "^1.0.0-pre.60",
     "tslib": "^2.3.1",
-    "typescript": "^4.0.2"
-  },
-  "dependencies": {
-    "bcrypt": "^5.0.1",
-    "dotenv": "^16.0.0",
-    "express": "^4.17.1",
-    "jsonwebtoken": "^8.5.1",
-    "morgan": "^1.10.0",
-    "mysql2": "^1.6.5"
+    "typescript": "^4.6.2"
   }
 }

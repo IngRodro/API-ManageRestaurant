@@ -1,11 +1,15 @@
 import dotenv from 'dotenv';
+
+import App from './app';
+
 dotenv.config();
 
-import { App } from './app'
-
 async function main() {
-    const app = new App('5000');
-    await app.listen();
+  const { PORT } = process.env;
+
+  const app = new App((PORT as unknown as number) || 8080);
+
+  await app.listen();
 }
 
-main();
+main().then();
