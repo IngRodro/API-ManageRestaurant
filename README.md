@@ -114,7 +114,7 @@
     "node_modules"
   ],
   "files": [
-    "tipes.d.ts"
+    "types.d.ts"
   ]
 }
 ```

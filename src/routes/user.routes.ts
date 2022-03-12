@@ -10,9 +10,9 @@ import { TokenValidation } from '../libs/validationToken';
 
 const router = Router();
 
-router.get('/signin', loginUser);
+router.get('/signIn', loginUser);
 
-router.put('/uUsername', TokenValidation, updateUsername);
+router.put('/updateUsername', TokenValidation, updateUsername);
 router.route('/').post(registerUser).put(TokenValidation, updateUser);
 
 router.route('/:username_req').delete(TokenValidation, deleteUser);

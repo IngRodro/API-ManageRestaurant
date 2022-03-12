@@ -7,6 +7,7 @@ import connect from '../database';
 // Interfaces
 import { User } from '../interfaces/User';
 import { Logueo } from '../interfaces/Logueo';
+import { AuthRequest } from '../interfaces/AuthRequest';
 // Bcrypt
 // Jsonwebtoken
 
@@ -169,13 +170,14 @@ export async function registerUser(
 
 // Funcion actualizar usuario
 export async function updateUser(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<Response | void> {
   try {
     const conn = await connect();
     const user: User = req.body;
     const currentUser = req.username;
+    console.log(req.username);
     const validateEmail = await validationEmail(user.email);
     if (!validateEmail || validateEmail.username === req.username) {
       const sql: string =
@@ -213,14 +215,14 @@ export async function updateUser(
 
 // Funcion actualizar username
 export async function updateUsername(
-  req: Request,
+  req: AuthRequest,
   res: Response
 ): Promise<Response | void> {
   try {
     const conn = await connect();
-    const currentUsername: string = req.username;
+    const currentUsername = req.username;
     const userNameUpdate: User = req.body;
-    if (await validationUser(userNameUpdate.username)) {
+    if (!(await validationUser(userNameUpdate.username))) {
       const sql: string = 'UPDATE users set username=? where username=?';
       const value = [userNameUpdate.username, currentUsername];
       await conn.query(sql, value);

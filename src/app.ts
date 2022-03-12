@@ -29,7 +29,7 @@ export default class App {
   private routes() {
     this.app.use('/user', UserRoutes);
     this.app.use('/supplier', TokenValidation, SupplierRoutes);
-    this.app.use('/saleproducts', TokenValidation, SalesProductsRoutes);
+    this.app.use('/saleProducts', TokenValidation, SalesProductsRoutes);
     this.app.use((req, res) => {
       res.status(404).json({
         message: 'Not Found',
