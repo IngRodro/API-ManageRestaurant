@@ -118,7 +118,7 @@ export async function registerUser(
     // Verificacion de los datos del usuario para verificar si estos estan registrados.
     if (validateUser == null && validateEmail == null) {
       // Variable sql con la consulta SQL para registrar el usuario en la tabla users.
-      const sql: string =
+      const sql =
         'INSERT INTO users(username, name, lastname, age, number, email, password, rol, state) VALUES(?,?,?,?,?,?,?,?,?)';
       // Encriptacion de la contraseña con la funcion cryptPassword
       const password: string | any = await cryptPassword(usersave.password);
@@ -180,7 +180,7 @@ export async function updateUser(
     console.log(req.username);
     const validateEmail = await validationEmail(user.email);
     if (!validateEmail || validateEmail.username === req.username) {
-      const sql: string =
+      const sql =
         'call restaurant.sp_update_users(?, ?, ?, ?, ?, ?, ?, ?, ?)';
       const value = [
         user.name,
@@ -223,7 +223,7 @@ export async function updateUsername(
     const currentUsername = req.username;
     const userNameUpdate: User = req.body;
     if (!(await validationUser(userNameUpdate.username))) {
-      const sql: string = 'UPDATE users set username=? where username=?';
+      const sql = 'UPDATE users set username=? where username=?';
       const value = [userNameUpdate.username, currentUsername];
       await conn.query(sql, value);
       return res.status(200).json({
@@ -253,7 +253,7 @@ export async function deleteUser(
   try {
     const conn = await connect();
     const username = req.params.username_req;
-    const sql: string = 'UPDATE users set state = 0 where users.username = ?';
+    const sql = 'UPDATE users set state = 0 where users.username = ?';
     await conn.query(sql, username);
     return res.status(200).json({ state: 'Deleted' });
   } catch (e: any) {
