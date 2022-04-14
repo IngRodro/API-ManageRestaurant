@@ -177,7 +177,7 @@ export async function updateUser(
     const conn = await connect();
     const user: User = req.body;
     const currentUser = req.username;
-    console.log(req.username);
+    
     const validateEmail = await validationEmail(user.email);
     if (!validateEmail || validateEmail.username === req.username) {
       const sql: string =
