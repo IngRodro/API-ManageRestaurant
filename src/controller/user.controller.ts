@@ -59,9 +59,9 @@ export async function loginUser(
     const userlogin: Logueo = req.body;
     const validateUser = await validationUser(userlogin.isesion);
     const validateEmail = await validationEmail(userlogin.isesion);
-    if (validateUser != null || validateEmail != null) {
+    if (validateUser !== null || validateEmail !== null) {
       let userlogged: User;
-      if (validateUser != null) {
+      if (validateUser !== null) {
         userlogged = validateUser;
       } else {
         userlogged = validateEmail;
@@ -116,7 +116,7 @@ export async function registerUser(
     // Constante validateEmail que recoge el resultado de la validacion del email.
     const validateEmail = await validationEmail(usersave.email);
     // Verificacion de los datos del usuario para verificar si estos estan registrados.
-    if (validateUser == null && validateEmail == null) {
+    if (validateUser === null && validateEmail === null) {
       // Variable sql con la consulta SQL para registrar el usuario en la tabla users.
       const sql =
         'INSERT INTO users(username, name, lastname, age, number, email, password, rol, state) VALUES(?,?,?,?,?,?,?,?,?)';
@@ -142,13 +142,13 @@ export async function registerUser(
         code: 200,
       });
     }
-    if (validateUser != null && validateEmail != null) {
+    if (validateUser !== null && validateEmail !== null) {
       return res.status(200).json({
         status: 'This user and email has already been used',
         code: 200,
       });
     }
-    if (validateEmail != null) {
+    if (validateEmail !== null) {
       return res.status(200).json({
         status: 'This email has already been used',
         code: 200,
