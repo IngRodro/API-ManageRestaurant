@@ -10,7 +10,7 @@ export async function listSupliers(
 ): Promise<Response | void> {
   try {
     const conn = await connect();
-    const query: string = 'SELECT * from suppliers where state != 0';
+    const query = 'SELECT * from suppliers where state != 0';
     const call = await conn.query(query);
     res.json(call[0]);
   } catch (e: any) {
@@ -30,7 +30,7 @@ export async function registerSupplier(
   try {
     const supplier: Supllier = req.body;
     const conn = await connect();
-    const query: string =
+    const query =
       'Insert into suppliers(name, location, number, email, state) values (?,?,?,?,?)';
     const values: any[] = [
       supplier.name,
@@ -59,7 +59,7 @@ export async function updateSuplier(
     const idSupplier: number = parseInt(req.params.idsupplier_req, 10);
     const supplier: Supllier = req.body;
     const conn = await connect();
-    const query: string =
+    const query =
       'Update suppliers set name = ?, location = ?, number = ?, email = ?, state = ? where idSupplier = ?';
     const values: any[] = [
       supplier.name,
@@ -88,7 +88,7 @@ export async function deleteSupplier(
   try {
     const idSupplier: number = parseInt(req.params.idsupplier_req, 10);
     const conn = await connect();
-    const query: string = `Update suppliers set state = 0 where idSupplier = ${idSupplier}`;
+    const query = `Update suppliers set state = 0 where idSupplier = ${idSupplier}`;
     await conn.query(query);
     return res.json({ status: 'Supplier Deleted' });
   } catch (e: any) {

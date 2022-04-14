@@ -11,7 +11,7 @@ export async function listSaleProducts(
 ): Promise<Response | void> {
   try {
     const conn = await connect();
-    const query: string =
+    const query =
       'SELECT * from SaleProducts JOIN Categories ON SaleProducts.idCategory = Categories.idCategoria where stateCategory != 0 and stateSaleProduct != 0';
     const call = await conn.query(query);
     const saleProducts: any[] = JSON.parse(JSON.stringify(call[0]));
